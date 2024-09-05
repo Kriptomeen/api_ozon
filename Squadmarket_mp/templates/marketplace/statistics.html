@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Статистика</h1>
+<p>Здесь будет отображаться статистика.</p>
+<div class="statistics">
+    <div class="box">
+        <h3>Общие продажи</h3>
+        <div class="value">₽ 125,430</div>
+        <div class="change positive">
+            <i class="fas fa-arrow-up"></i> 12.5%
+        </div>
+    </div>
+    <div class="box">
+        <h3>Новые клиенты</h3>
+        <div class="value">237</div>
+        <div class="change negative">
+            <i class="fas fa-arrow-down"></i> 3.8%
+        </div>
+    </div>
+    <div class="box">
+        <h3>Конверсия</h3>
+        <div class="chart">
+            <canvas id="conversionChart"></canvas>
+            <div class="center">
+                <div class="percentage">68%</div>
+                <div class="label">Конверсия</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

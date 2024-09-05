@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="welcome">
+    <h2>Добро пожаловать в SquadeMarket</h2>
+    {% if user.is_authenticated %}
+        <p>Привет, {{ user.username }}!</p>
+        <div class="statistics">
+            <div class="box">
+                <h3>Сегодняшние продажи</h3>
+                <p>{{ today_sales }}</p>
+            </div>
+            <div class="box">
+                <h3>Общий доход</h3>
+                <p>{{ total_revenue }}</p>
+            </div>
+        </div>
+    {% else %}
+        <p>Пожалуйста, войдите или зарегистрируйтесь для доступа к панели управления.</p>
+    {% endif %}
+</div>
+{% endblock %}

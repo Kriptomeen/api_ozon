@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="ozon-container">
+    <div class="ozon-header" id="toggle-form">
+        <h2>Загрузка статистики OZON</h2>
+    </div>
+    
+    <div id="messages-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <form method="post" class="ozon-form collapsed" id="ozon-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="date_from">Дата начала:</label>
+            <input type="date" id="date_from" name="date_from" required value="{{ date_from|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="date_to">Дата окончания:</label>
+            <input type="date" id="date_to" name="date_to" required value="{{ date_to|default:'' }}">
+        </div>
+        <div class="form-group radio-group">
+            <label>
+                <input type="radio" name="schema" value="FBO" required {% if schema == 'FBO' %}checked{% endif %}>
+                FBO (Fulfillment by OZON)
+            </label>
+            <label>
+                <input type="radio" name="schema" value="FBS" required {% if schema == 'FBS' %}checked{% endif %}>
+                FBS (Fulfillment by Seller)
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Загрузить данные</button>
+    </form>
+</div>
+
+<div class="ozon-table-container">
+    <h3>Таблица заказов FBO</h3>
+
+    <form method="get" class="filter-form">
+        <div class="form-group">
+            <label for="start_date">Дата начала:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+        </div>
+        <div class="form-group">
+            <label for="end_date">Дата окончания:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+        </div>
+        <div class="form-group columns-select">
+            <label>Выберите столбцы:</label>
+            {% for column in available_columns %}
+            <label>
+                <input type="checkbox" name="columns" value="{{ column }}" {% if column in columns %}checked{% endif %}>
+                {{ column|title|replace_underscore }}
+            </label>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Применить фильтр</button>
+    </form>
+
+    <div class="table-responsive">
+        <table class="ozon-fbo-table">
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                    <th>{{ column|title|replace_underscore }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    {% for column in columns %}
+                    <td>
+                        {% if column == 'created_at' or column == 'in_process_at' %}
+                            {{ order|getattribute:column|date:"d.m.Y H:i" }}
+                        {% elif column == 'product_price' or column == 'product_commission' or column == 'delivery_expenses' %}
+                            {{ order|getattribute:column|floatformat:2 }} ₽
+                        {% else %}
+                            {{ order|getattribute:column }}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var toggleHeader = document.getElementById('toggle-form');
+        var form = document.getElementById('ozon-form');
+
+        toggleHeader.addEventListener('click', function() {
+            form.classList.toggle('collapsed');
+            console.log('Toggle clicked'); // Для отладки
+        });
+
+        // Обработка сообщений
+        var messagesContainer = document.getElementById('messages-container');
+        if (messagesContainer) {
+            var messages = messagesContainer.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 1000);
+                }, 10000);
+            });
+        }
+    });
+</script>
+{% endblock %}

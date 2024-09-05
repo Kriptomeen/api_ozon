@@ -1,0 +1,715 @@
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap';
+
+:root {
+    --c-gray-900: #131313;
+    --c-gray-800: #1f1f1f;
+    --c-gray-700: #2e2e2e;
+    --c-gray-600: #313131;
+    --c-gray-500: #969593;
+    --c-gray-400: #a6a6a6;
+    --c-gray-300: #bdbbb7;
+    --c-gray-200: #f1f1f1;
+    --c-gray-100: #ffffff;
+
+    --c-green-500: #45ffbc;
+    --c-olive-500: #e3ffa8;
+
+    --c-white: var(--c-gray-100);
+
+    --c-text-primary: var(--c-gray-100);
+    --c-text-secondary: var(--c-gray-200);
+    --c-text-tertiary: var(--c-gray-500);
+
+    --c-bg-primary: var(--c-gray-900);
+    --c-bg-secondary: var(--c-gray-800);
+    --c-bg-tertiary: var(--c-gray-700);
+
+    --sidebar-width: 250px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--c-bg-primary);
+    color: var(--c-text-primary);
+    font-size: .925rem;
+    line-height: 1.5;
+}
+
+.container {
+    margin-left: var(--sidebar-width);
+    transition: all .3s ease-in-out;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--c-bg-secondary);
+    padding: 10px 20px;
+    color: var(--c-text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--c-green-500);
+}
+
+header a {
+    color: var(--c-text-secondary);
+    text-decoration: none;
+    margin-left: 15px;
+    transition: color 0.3s ease;
+}
+
+header a:hover {
+    color: var(--c-green-500);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--c-bg-secondary);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--c-bg-tertiary);
+}
+
+.sidebar-header h5 a {
+    color: var(--c-green-500);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.sidebar-menu {
+    flex-grow: 1;
+    padding: 20px 0;
+}
+
+.sidebar-menu li {
+    padding: 10px 20px;
+}
+
+.sidebar-menu a {
+    color: var(--c-text-secondary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.sidebar-menu a:hover {
+    color: var(--c-green-500);
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid var(--c-bg-tertiary);
+}
+
+.sidebar-footer a {
+    display: block;
+    color: var(--c-text-secondary);
+    text-decoration: none;
+    padding: 10px 0;
+    transition: color 0.3s ease;
+}
+
+.sidebar-footer a:hover {
+    color: var(--c-green-500);
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.messages {
+    list-style-type: none;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: var(--c-bg-tertiary);
+    border-radius: 4px;
+}
+
+.messages li {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.messages .success {
+    background-color: var(--c-green-500);
+    color: var(--c-gray-900);
+}
+
+.messages .error {
+    background-color: #e74c3c;
+    color: var(--c-white);
+}
+
+.toggle-sidebar {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: var(--c-bg-secondary);
+    color: var(--c-text-primary);
+    border: none;
+    padding: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .toggle-sidebar {
+        display: block;
+    }
+
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    body.sidebar-open .main-content {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+/* Стили для класса statistics */
+.statistics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.statistics .box {
+    background-color: var(--c-bg-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.statistics .box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.statistics .box h3 {
+    color: var(--c-text-secondary);
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.statistics .box .value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--c-green-500);
+}
+
+.statistics .box .change {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.statistics .box .change.positive {
+    color: var(--c-green-500);
+}
+
+.statistics .box .change.negative {
+    color: #e74c3c;
+}
+
+.statistics .box .change i {
+    margin-right: 5px;
+}
+
+/* Добавим стили для круговых диаграмм */
+.statistics .box .chart {
+    width: 100px;
+    height: 100px;
+    margin: 15px auto;
+    position: relative;
+}
+
+.statistics .box .chart canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.statistics .box .chart .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.statistics .box .chart .center .percentage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--c-green-500);
+}
+
+.statistics .box .chart .center .label {
+    font-size: 0.8rem;
+    color: var(--c-text-secondary);
+}
+
+/* Стили для настроек пользователя */
+.user-settings {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--c-bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-settings h2 {
+    color: var(--c-green-500);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.user-settings form {
+    display: grid;
+    gap: 20px;
+}
+
+.user-settings .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-settings label {
+    color: var(--c-text-secondary);
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.user-settings input[type="text"],
+.user-settings input[type="email"],
+.user-settings input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--c-bg-tertiary);
+    background-color: var(--c-bg-primary);
+    color: var(--c-text-primary);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.user-settings input[type="text"]:focus,
+.user-settings input[type="email"]:focus,
+.user-settings input[type="password"]:focus {
+    outline: none;
+    border-color: var(--c-green-500);
+}
+
+.user-settings .btn-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.user-settings .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-settings .btn-primary {
+    background-color: var(--c-green-500);
+    color: var(--c-gray-900);
+}
+
+.user-settings .btn-primary:hover {
+    background-color: var(--c-olive-500);
+}
+
+.user-settings .btn-secondary {
+    background-color: var(--c-bg-tertiary);
+    color: var(--c-text-primary);
+}
+
+.user-settings .btn-secondary:hover {
+    background-color: var(--c-gray-600);
+}
+
+.user-settings .error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.user-settings .success-message {
+    color: var(--c-green-500);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+/* Дополнительные стили для настроек пользователя */
+.user-settings .form-section {
+    margin-bottom: 30px;
+}
+
+.user-settings h3 {
+    color: var(--c-text-secondary);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--c-bg-tertiary);
+    padding-bottom: 5px;
+}
+
+.user-settings .form-group {
+    margin-bottom: 15px;
+}
+
+.user-settings .form-group input,
+.user-settings .form-group select,
+.user-settings .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--c-bg-tertiary);
+    background-color: var(--c-bg-primary);
+    color: var(--c-text-primary);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.user-settings .form-group input:focus,
+.user-settings .form-group select:focus,
+.user-settings .form-group textarea:focus {
+    outline: none;
+    border-color: var(--c-green-500);
+}
+
+.user-settings .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--c-text-secondary);
+}
+
+.user-settings .btn-group {
+    margin-top: 20px;
+}
+
+/* Стили для форм аутентификации */
+.auth-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--c-bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form h2 {
+    color: var(--c-green-500);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.auth-form form {
+    display: grid;
+    gap: 15px;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="password"],
+.auth-form input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--c-bg-tertiary);
+    background-color: var(--c-bg-primary);
+    color: var(--c-text-primary);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.auth-form input[type="text"]:focus,
+.auth-form input[type="password"]:focus,
+.auth-form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--c-green-500);
+}
+
+.auth-form .btn-primary {
+    background-color: var(--c-green-500);
+    color: var(--c-gray-900);
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-form .btn-primary:hover {
+    background-color: var(--c-olive-500);
+}
+
+.auth-form p {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.auth-form a {
+    color: var(--c-green-500);
+    text-decoration: none;
+}
+
+.auth-form a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для страницы OZON */
+.ozon-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--c-bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ozon-header {
+    text-align: center;
+    cursor: pointer;
+    padding: 15px;
+    background-color: var(--c-bg-tertiary);
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.ozon-header:hover {
+    background-color: var(--c-bg-primary);
+}
+
+.ozon-header h2 {
+    margin: 0;
+    color: var(--c-green-500);
+    font-size: 1.5rem;
+}
+
+.ozon-form {
+    background-color: var(--c-bg-secondary);
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+    max-height: 1000px;
+    opacity: 1;
+    overflow: hidden;
+}
+
+.ozon-form.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+.ozon-form.collapsed * {
+    display: none;
+}
+
+.ozon-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.ozon-form label {
+    color: var(--c-text-secondary);
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.ozon-form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--c-bg-tertiary);
+    background-color: var(--c-bg-primary);
+    color: var(--c-text-primary);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.ozon-form input[type="date"]:focus {
+    outline: none;
+    border-color: var(--c-green-500);
+}
+
+.ozon-form .btn-primary {
+    background-color: var(--c-green-500);
+    color: var(--c-gray-900);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ozon-form .btn-primary:hover {
+    background-color: var(--c-olive-500);
+}
+
+.ozon-form .btn-primary:active {
+    transform: translateY(1px);
+}
+
+.ozon-form .radio-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.ozon-form .radio-group label {
+    display: flex;
+    align-items: center;
+    color: var(--c-text-primary);
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.ozon-form .radio-group input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.message {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.message.success {
+    background-color: var(--c-green-500);
+    color: var(--c-gray-900);
+}
+
+.message.error {
+    background-color: #e74c3c;
+    color: var(--c-white);
+}
+
+/*стили для таблицы*/
+.ozon-table-container {
+    width: 100%;
+    padding: 20px;
+    background-color: var(--c-bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.ozon-table-container h3 {
+    margin-bottom: 20px;
+    color: var(--c-text-primary);
+}
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-form .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-form .columns-select {
+    flex-basis: 100%;
+}
+
+.filter-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--c-text-secondary);
+}
+
+.filter-form input[type="date"],
+.filter-form input[type="checkbox"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--c-border);
+    border-radius: 4px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.ozon-fbo-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ozon-fbo-table th,
+.ozon-fbo-table td {
+    padding: 10px;
+    border: 1px solid var(--c-border);
+    text-align: left;
+}
+
+.ozon-fbo-table th {
+    background-color: var(--c-bg-tertiary);
+    font-weight: bold;
+    color: var(--c-text-primary);
+}
+
+.ozon-fbo-table tr:nth-child(even) {
+    background-color: var(--c-bg-secondary);
+}

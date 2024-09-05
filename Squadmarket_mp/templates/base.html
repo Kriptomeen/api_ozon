@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SquadeMarket</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h5><a href="{% url 'home' %}">SquadeMarket</a></h5>
+        </div>
+        {% if user.is_authenticated %}
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a></li>
+            <li><a href="{% url 'statistics' %}"><i class="fas fa-chart-bar"></i> Статистика</a></li>
+            <li><a href="{% url 'ozon' %}"><i class="fas fa-shopping-cart"></i> Ozon</a></li>
+            <li><a href="{% url 'wildberries' %}"><i class="fas fa-store"></i> Wildberries</a></li>
+            <li><a href="{% url 'yandex' %}"><i class="fas fa-search"></i> Yandex</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{% url 'user_settings' %}"><i class="fas fa-user"></i> {{ user.username }}</a>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </div>
+        {% else %}
+        <div class="sidebar-footer">
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Войти</a>
+            <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Регистрация</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="main-content">
+
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        // Скрипт для переключения сайдбара на мобильных устройствах
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleSidebar = document.createElement('button');
+            toggleSidebar.innerHTML = '☰';
+            toggleSidebar.classList.add('toggle-sidebar');
+            document.body.appendChild(toggleSidebar);
+
+            toggleSidebar.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-open');
+            });
+        });
+    </script>
+</body>
+</html>
