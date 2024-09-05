@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from .models import OzonOrder
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 def home(request):
     return render(request, 'marketplace/home.html')
@@ -41,6 +42,7 @@ def ozon_view(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     columns = request.GET.getlist('columns')
+    rows_per_page = int(request.GET.get('rows_per_page', 25))
 
     # Если даты не указаны, используем последние 5 дней
     if not start_date or not end_date:
@@ -50,27 +52,38 @@ def ozon_view(request):
         start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
 
-    # Получаем заказы FBO за указанный период
-    orders = OzonOrder.objects.filter(
-        Q(created_at__date__gte=start_date) & 
-        Q(created_at__date__lte=end_date) & 
-        Q(schema='FBO') &
-        Q(client=request.user)
-    ).order_by('-created_at')
-
     # Получаем все доступные столбцы из модели OzonOrder
     available_columns = [field.name for field in OzonOrder._meta.get_fields() if field.name != 'client']
 
     # Если столбцы не указаны, используем все доступные
     if not columns:
         columns = available_columns
+    else:
+        # Преобразуем строку с перечислением столбцов в список
+        columns = columns[0].split(',') if columns[0] else available_columns
+
+    # Получаем заказы за указанный период
+    orders = OzonOrder.objects.filter(
+        Q(created_at__date__gte=start_date) & 
+        Q(created_at__date__lte=end_date) & 
+        Q(client=request.user)
+    ).order_by('-created_at')
+
+    # Получаем только выбранные поля
+    orders = orders.values(*columns)
+
+    # Создаем объект пагинатора
+    paginator = Paginator(orders, rows_per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'orders': orders,
+        'orders': page_obj,
         'columns': columns,
         'available_columns': available_columns,
         'start_date': start_date,
         'end_date': end_date,
+        'rows_per_page': rows_per_page,
     }
 
     return render(request, 'marketplace/ozon.html', context)

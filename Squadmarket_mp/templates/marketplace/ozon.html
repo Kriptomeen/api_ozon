@@ -42,35 +42,56 @@
 </div>
 
 <div class="ozon-table-container">
-    <h3>Таблица заказов FBO</h3>
+    <div class="ozon-table-header">
+        <h3 class="ozon-table-title">Таблица заказов FBO</h3>
+        <button id="columnSelectBtn" class="column-select-btn">Выбрать столбцы</button>
+    </div>
 
-    <form method="get" class="filter-form">
-        <div class="form-group">
-            <label for="start_date">Дата начала:</label>
-            <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+    <form method="get" class="filter-form" id="filterForm">
+        <div class="filter-group">
+            <div class="filter-item">
+                <label for="start_date">Дата начала:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+            </div>
+            <div class="filter-item">
+                <label for="end_date">Дата окончания:</label>
+                <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+            </div>
+            <div class="filter-item">
+                <label for="rows_per_page">Строк на странице:</label>
+                <select id="rows_per_page" name="rows_per_page">
+                    <option value="25" {% if rows_per_page == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if rows_per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if rows_per_page == 100 %}selected{% endif %}>100</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="end_date">Дата окончания:</label>
-            <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
-        </div>
-        <div class="form-group columns-select">
-            <label>Выберите столбцы:</label>
-            {% for column in available_columns %}
-            <label>
-                <input type="checkbox" name="columns" value="{{ column }}" {% if column in columns %}checked{% endif %}>
-                {{ column|title|replace_underscore }}
-            </label>
-            {% endfor %}
-        </div>
-        <button type="submit" class="btn btn-primary">Применить фильтр</button>
     </form>
+
+    <div id="columnSelectModal" class="column-select-modal">
+        <div class="column-select-content">
+            <span class="close">&times;</span>
+            <h4>Выберите столбцы для отображения</h4>
+            <form id="columnSelectForm">
+                {% for column in available_columns %}
+                <label>
+                    <input type="checkbox" name="columns" value="{{ column }}" {% if column in columns %}checked{% endif %}>
+                    {{ column|title|replace_underscore }}
+                </label><br>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Применить</button>
+            </form>
+        </div>
+    </div>
 
     <div class="table-responsive">
         <table class="ozon-fbo-table">
             <thead>
                 <tr>
                     {% for column in columns %}
-                    <th>{{ column|title|replace_underscore }}</th>
+                    <th class="{% if column in 'id,status' %}column-small{% elif column in 'created_at,in_process_at' %}column-medium{% elif column in 'product_name' %}column-extra-large{% else %}column-large{% endif %}">
+                        {{ column|title|replace_underscore }}
+                    </th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -78,13 +99,13 @@
                 {% for order in orders %}
                 <tr>
                     {% for column in columns %}
-                    <td>
+                    <td class="{% if column in 'product_price,product_commission,delivery_expenses' %}text-right{% elif column in 'status' %}text-center{% endif %}">
                         {% if column == 'created_at' or column == 'in_process_at' %}
-                            {{ order|getattribute:column|date:"d.m.Y H:i" }}
+                            {{ order|get_item:column|date:"d.m.Y H:i" }}
                         {% elif column == 'product_price' or column == 'product_commission' or column == 'delivery_expenses' %}
-                            {{ order|getattribute:column|floatformat:2 }} ₽
+                            {{ order|get_item:column|floatformat:2 }} ₽
                         {% else %}
-                            {{ order|getattribute:column }}
+                            {{ order|get_item:column }}
                         {% endif %}
                     </td>
                     {% endfor %}
@@ -92,6 +113,24 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if orders.has_previous %}
+                <a href="?page=1&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}{% if request.GET.columns %}&columns={{ request.GET.columns }}{% endif %}&rows_per_page={{ rows_per_page }}">&laquo; первая</a>
+                <a href="?page={{ orders.previous_page_number }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}{% if request.GET.columns %}&columns={{ request.GET.columns }}{% endif %}&rows_per_page={{ rows_per_page }}">предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ orders.number }} из {{ orders.paginator.num_pages }}.
+            </span>
+
+            {% if orders.has_next %}
+                <a href="?page={{ orders.next_page_number }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}{% if request.GET.columns %}&columns={{ request.GET.columns }}{% endif %}&rows_per_page={{ rows_per_page }}">следующая</a>
+                <a href="?page={{ orders.paginator.num_pages }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}{% if request.GET.columns %}&columns={{ request.GET.columns }}{% endif %}&rows_per_page={{ rows_per_page }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
     </div>
 </div>
 
@@ -102,7 +141,6 @@
 
         toggleHeader.addEventListener('click', function() {
             form.classList.toggle('collapsed');
-            console.log('Toggle clicked'); // Для отладки
         });
 
         // Обработка сообщений
@@ -115,9 +153,108 @@
                     setTimeout(function() {
                         message.remove();
                     }, 1000);
-                }, 10000);
+                }, 5000);
             });
         }
+
+        // Модальное окно для выбора столбцов
+        var modal = document.getElementById("columnSelectModal");
+        var btn = document.getElementById("columnSelectBtn");
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function adjustTableLayout() {
+            var table = document.querySelector('.ozon-fbo-table');
+            var container = document.querySelector('.table-responsive');
+            
+            table.style.width = 'auto';
+            
+            var totalWidth = Array.from(table.querySelectorAll('th')).reduce((sum, th) => sum + th.offsetWidth, 0);
+            
+            if (totalWidth > container.offsetWidth) {
+                table.style.width = totalWidth + 'px';
+            } else {
+                table.style.width = '100%';
+            }
+        }
+
+        function applyFilters() {
+            var selectedColumns = Array.from(document.querySelectorAll('input[name="columns"]:checked')).map(el => el.value);
+            var rowsPerPage = document.getElementById('rows_per_page').value;
+            var startDate = document.getElementById('start_date').value;
+            var endDate = document.getElementById('end_date').value;
+            
+            sessionStorage.setItem('selectedColumns', JSON.stringify(selectedColumns));
+            sessionStorage.setItem('rowsPerPage', rowsPerPage);
+            sessionStorage.setItem('startDate', startDate);
+            sessionStorage.setItem('endDate', endDate);
+            
+            var url = new URL(window.location);
+            url.searchParams.set('columns', selectedColumns.join(','));
+            url.searchParams.set('rows_per_page', rowsPerPage);
+            url.searchParams.set('start_date', startDate);
+            url.searchParams.set('end_date', endDate);
+            window.location.href = url.toString();
+        }
+
+        document.getElementById("columnSelectForm").onsubmit = function(e) {
+            e.preventDefault();
+            applyFilters();
+        }
+
+        document.getElementById("rows_per_page").addEventListener('change', applyFilters);
+        
+        document.getElementById("filterForm").onsubmit = function(e) {
+        e.preventDefault();
+        applyFilters();
+    }
+        document.getElementById('start_date').addEventListener('change', applyFilters);
+        
+        document.getElementById('end_date').addEventListener('change', applyFilters);
+
+        window.addEventListener('load', function() {
+            var savedColumns = JSON.parse(sessionStorage.getItem('selectedColumns'));
+            var savedRowsPerPage = sessionStorage.getItem('rowsPerPage');
+            var savedStartDate = sessionStorage.getItem('startDate');
+            var savedEndDate = sessionStorage.getItem('endDate');
+            
+            if (savedColumns) {
+                var checkboxes = document.querySelectorAll('input[name="columns"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = savedColumns.includes(checkbox.value);
+                });
+            }
+            
+            if (savedRowsPerPage) {
+                document.getElementById('rows_per_page').value = savedRowsPerPage;
+            }
+            
+            if (savedStartDate) {
+                document.getElementById('start_date').value = savedStartDate;
+            }
+            
+            if (savedEndDate) {
+                document.getElementById('end_date').value = savedEndDate;
+            }
+
+            adjustTableLayout();
+        });
+
+        window.addEventListener('resize', adjustTableLayout);
+        document.getElementById('columnSelectForm').addEventListener('change', adjustTableLayout);
     });
 </script>
 {% endblock %}

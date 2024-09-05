@@ -10,6 +10,11 @@ def getattribute(value, arg):
     return None
 
 @register.filter
+def get_item(dictionary, key):
+    """Gets an item from a dictionary"""
+    return dictionary.get(key)
+
+@register.filter
 def replace_underscore(value):
     """Replaces underscores with spaces"""
     return value.replace('_', ' ')
